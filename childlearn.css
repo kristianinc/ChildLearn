@@ -1,0 +1,32 @@
+*{
+	
+}
+.heading{
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+.dashboard{
+	background-color: #616161;
+	color: white;
+}
+.button{
+	background-color: black;
+	color: white;
+	border-radius: 2px;
+}
+a,a[href],a:hover{
+	text-decoration: none;
+	font-size: 1.0rem;
+}
+.body{
+	background-color: rgb(225, 246, 255);
+}
+.table{
+	border: 1px;
+	
+}
+.size{
+	width:100%;
+	height: 610px;
+}

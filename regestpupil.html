@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="childlearn.css">
+    <script src="register.php"></script>
+	<title>Open Assignments</title>
+</head>
+<body>
+	<table class="size" >
+		<tr>
+			<td colspan="2" class="heading"> <h1>CHILDLEARN</h1></td>
+		</tr>
+		<tr>
+			<td class="dashboard">
+				<h1 style="background-color: black"><b>DASHBOARD</b></h1>
+				<h4 style="color: blue"><u>Registered Pupils</u></h4>
+				<h4>Assignments</h4>
+				<ul>
+					<li ><a href="open.html">Open</a></li>
+					<li><a href="Closed.html">Closed</a></li>
+					<li><a href="New.html">New</a></li>
+				</ul>
+				<p><a href="Assessment.html">Assessment</a></p>
+				<input type="button" name="logout" value="LOGOUT" class="button">
+			</td>
+			<td class="body">
+				<h2>Register pupil</h2>
+                <form class="form" method="POST" action="registerpupil.php">
+                    Usercode:<input type="varchar"   name="usercode"required><br><br>
+                    Firstname:<input type="text"  name="firstname"required ><br><br>
+                    Lastname:<input type="text" name="lastname"required ><br><br>
+                    Phone contact:<input type="varchar"  name="phonecontact"><br><br>
+                    Password: <input type="password" name="password" required>
+                    <!-- <input type="button" name="REGISTER" value="REGISTER" class="button"> -->
+                    <button name="REGISTER">REGISTER</button>
+                </form>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
