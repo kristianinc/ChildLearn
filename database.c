@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<mysql.h>
 #include<winsock2.h>
+#include<time.h>
 
 void finish_with_error(MYSQL*conn){
 fprintf(stderr,"%s\n",mysql_error(conn));
@@ -11,14 +12,17 @@ exit(1);
 
 
 int main(){
+    int m,n;
 
 printf("============= CHILDLEARN =============\n\n");
 printf("connecting to the database please wait....\n");
     //connection to the database
  MYSQL_RES *res;
  MYSQL_RES *result;
- MYSQL_ROW *row;
+ MYSQL_ROW row;
  char password[10];
+ char mystring[300], myquery[100], ass[8],pupilname[20],stdtquery[230];
+ char option;
 
 MYSQL *conn;
 conn = mysql_init(0);
@@ -30,40 +34,46 @@ else {printf("status:not connected\n\n");
  exit(0);
   }
 
+  for(;;){
 
-
-
-
-
-
-  printf("enter your password\n");
+  printf("enter your school code\n");
   gets(password);
+  strcpy(myquery,"select * from pupils where schoolcode = \'");
+  strcat(myquery,password);
+  strcat(myquery,"\'");
 
-  if(strcmp(password,"love")==0){
-    printf("access granted\n\n\n");
-  } else{printf("access denied\n\n\n");
-       exit(0);
+  if(mysql_query(conn,myquery)){
+    printf("error\n");
+    exit(0);
   }
+    res = mysql_store_result(conn);
+    row = mysql_fetch_row(res);
 
-   //mysql_free_result(res);
-   //mysql_close(conn);
+    if(res==NULL){
+    finish_with_error(conn);
+   }
+
+  strcpy(stdtquery,"select firstname from pupils where schoolcode = \'");
+  strcat(stdtquery,password);
+  strcat(stdtquery,"\'");
+
+   if(mysql_query(conn,stdtquery)){
+    finish_with_error(conn);}
+   result = mysql_init(0);
+   result = mysql_store_result(conn);
+   if(res==NULL){
+    finish_with_error(conn);}
+   int num_fields=mysql_num_fields(result);
+   while((row=mysql_fetch_row(result))){
+    for(int i=0;i<num_fields;i++){
+            strcpy(pupilname,row[0]);}
+   }
+
+    if((row = mysql_num_rows(res))>0){
+        printf("correct password!\n\n hey %s, welcome to childlearn\n\n",pupilname);
 
 
-
-  //if (mysql_query(conn, "create table pupils ( firstname varchar(20), lastname varchar(10), schoolcode varchar(10));") != 0)
- //{
-  // fprintf(stderr, "failed to create the table\n");
-  // return EXIT_FAILURE; }
-
-
-  /*if (mysql_query(conn, "select * from pupils;") != 0)
-  {
-    fprintf(stderr, "Query Failure\n");
-    return EXIT_FAILURE;
-  }*/
-
-
-
+printf("============= MENU ============\n\n");
 
 printf("  list of commands you can enter\n\n");
 printf("   viewall\n");
@@ -72,26 +82,16 @@ printf("   viewassignment\n");
 printf("   requestactivation\n");
 printf("   checkdates\n");
 
-
-
-
-
-
-
+ printf("================================");
 
 char choice[20];
 
-//login by checking databases
-
-
-//allowing pupil to enter command of their choice
-//we need sql statements to query the database
 printf("\n\nenter your command\n");
 gets(choice);
 
 if(strcmp(choice, "viewall")==0){
 
-if(mysql_query(conn,"SELECT firstname FROM pupils; ")){
+if(mysql_query(conn,"SELECT * FROM assignments; ")){
     finish_with_error(conn);
    }
    res = mysql_init(0);
@@ -101,15 +101,46 @@ if(mysql_query(conn,"SELECT firstname FROM pupils; ")){
     finish_with_error(conn);
    }
 
-  // printf("%s",res);
-
    int num_fields=mysql_num_fields(res);
+      printf("\n open assignments:\n");
+      printf("  \nassignment_ID  characters\n");
    while((row=mysql_fetch_row(res))){
     for(int i=0;i<num_fields;i++){
-        printf("%s ",row[i]);
+            strcpy(ass,row[0]);
+        printf("  %s            ",row[i]);
     }
     printf("\n");
    }
+
+   //fetching the characters
+   if(mysql_query(conn,"SELECT characters FROM assignments; ")){
+    finish_with_error(conn);
+   }
+   res = mysql_init(0);
+   res = mysql_store_result(conn);
+
+   if(res==NULL){
+    finish_with_error(conn);
+   }
+    num_fields=mysql_num_fields(res);
+   while((row=mysql_fetch_row(res))){
+    for(int i=0;i<num_fields;i++){
+            strcpy(ass,row[0]);}
+   }
+   printf("\nyou are drawing characters %s in their order\n",ass);
+   int length = strlen(ass);
+   for(n=0;n<length;n++){
+    if(ass[n] =='A'){
+        printf("currently drawing A\n");
+    }
+
+
+
+
+   }
+    //code for sending results into database
+   //end of viewall.
+   exit(0);
 }
 
 else if(strcmp(choice, "checkstatus")==0){
@@ -125,68 +156,25 @@ else if(strcmp(choice, "checkdates")==0){
 }
 
 else if(strcmp(choice, "requestactivation")==0){
-		printf("activation request sent\n");}
 
-else{
+ if (mysql_query(conn, "insert into requests  (schoolcode , petition) values  ('1200','activateme');")){
+
+     fprintf(stderr, "couldnt send your request\n");
+     return EXIT_FAILURE; }
+     printf("your activation request has been sent to your teacher\n");
+  exit(0);
+         }
+
+  else{
 	printf("command not recognized\n");
 	exit(0);
 
 
 }
 
-//part for attempting assignments
-//we need logic code after selecting characters from the database.
+}    else {printf("incorrect password, try again\n\n");
 
-
-printf("\n\n");
- int i,j,number;
-int *letter;
-
- int array[7][4];
-
-
-  printf("enter 0 or 1 to draw your character:\n");
-
-  for(i=0;i<7;i++){
-  	for(j=0;j<4;j++){
-
-  	printf("enter 0 or 1 at row %d, column %d\n",(i+1),(j+1));
-  	scanf("%d",&number);
-
-  	if(number==1){
-  		array[i][j]= 1;
-	  }
-	  else if (number==0){
-	  	array[i][j] = 0;
-	  }
-
-	  }
-
- printf("\n");
-	  }
-
-
-printf("\n\n");
-printf("the character you entered is shown below\n");
-
-for(i=0;i<7;i++){
-  for(j=0;j<4;j++){
-  	*letter;
- letter=&array[i][j];
- if (*letter==1){
-
- 	printf("* ");
- }
-  else {
-  	printf("");}
-
-
-
-  }
-	printf("\n");
-
-}
-
-
+          // exit(0);
+            } }
 
 }
