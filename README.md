@@ -1,2 +1,0 @@
-# ChildLearn
-kinderCare recess project
